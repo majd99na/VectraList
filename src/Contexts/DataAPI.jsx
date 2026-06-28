@@ -1,5 +1,6 @@
 import axios from "axios";
 import { createContext, useContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { generate } from "short-uuid";
 
 const dataApiContext = createContext();
@@ -9,7 +10,7 @@ export const DataApiProvider = ({ children }) => {
   const [pendingAuth, setPendingAuth] = useState(true);
   const [todos, setTodos] = useState([]);
   const [loadingTodos, setLoadingTodos] = useState(false);
-
+  const nav = useNavigate();
   const api = axios.create({
     baseURL: import.meta.env.VITE_API_ENDPOINT,
     headers: { "Content-Type": "application/json" },
@@ -21,6 +22,7 @@ export const DataApiProvider = ({ children }) => {
       console.log(res.data.userInfo);
 
       setUser(res.data.userInfo);
+      nav("/dashboard");
     } catch (error) {
       console.log(error);
     } finally {
@@ -31,6 +33,7 @@ export const DataApiProvider = ({ children }) => {
     try {
       const res = await api.post("/users/signin", data);
       setUser(res.data.user);
+      nav("/dashboard");
     } catch (error) {
       throw error.response.data;
     }
@@ -39,6 +42,7 @@ export const DataApiProvider = ({ children }) => {
   const signUp = async (data) => {
     try {
       await api.post("/users/signup", data);
+      nav("/signin");
     } catch (error) {
       throw error.response.data;
     }
@@ -48,6 +52,7 @@ export const DataApiProvider = ({ children }) => {
     try {
       await api.post("/users/signout");
       setUser(null);
+      nav("/");
     } catch (error) {
       throw error.response.data;
     }
