@@ -11,10 +11,10 @@ import {
 } from "react-icons/fa";
 import { BiListPlus } from "react-icons/bi";
 import { useDataApi } from "../Contexts/DataAPI";
-import { Button } from "react-bootstrap";
+import { Button, Spinner } from "react-bootstrap";
 
 const Navbar = () => {
-  const { user, logOut } = useDataApi();
+  const { user, logOut, pendingAuth } = useDataApi();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
 
@@ -32,7 +32,7 @@ const Navbar = () => {
       <div className="custom-nav-container">
         <Link to="/" className="custom-nav-logo">
           <BiListPlus className="custom-logo-icon" />
-          <span>TodoApp</span>
+          <span>VectraList</span>
         </Link>
 
         <button
@@ -54,17 +54,10 @@ const Navbar = () => {
               <span>Home</span>
             </Link>
           </li>
-          <li>
-            <Link
-              to={"/dashboard"}
-              className={`custom-nav-link ${isActive("/dashboard") ? "active" : ""}`}
-              onClick={() => setIsMenuOpen(false)}
-            >
-              <span className="custom-nav-icon">{<FaTachometerAlt />}</span>
-              <span>Dashboard</span>
-            </Link>
-          </li>
-          {!user ? (
+
+          {pendingAuth ? (
+            <Spinner size="sm" variant="light" animation="grow" />
+          ) : !user ? (
             <>
               <li>
                 <Link
@@ -89,6 +82,16 @@ const Navbar = () => {
             </>
           ) : (
             <>
+              <li>
+                <Link
+                  to={"/dashboard"}
+                  className={`custom-nav-link ${isActive("/dashboard") ? "active" : ""}`}
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  <span className="custom-nav-icon">{<FaTachometerAlt />}</span>
+                  <span>Dashboard</span>
+                </Link>
+              </li>
               <span className="nav-user">Hello {user.username}</span>
               <Button onClick={logOut} variant="outline-danger">
                 Logout

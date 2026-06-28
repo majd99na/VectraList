@@ -79,7 +79,7 @@ const Index = () => {
 
       {/* Features Section */}
       <section className="custom-features-section">
-        <h2 className="custom-section-title">Why Choose TodoApp?</h2>
+        <h2 className="custom-section-title">Why Choose VectraList?</h2>
         <div className="custom-features-grid">
           {features.map((feature, index) => (
             <div key={index} className="custom-feature-card">
@@ -101,7 +101,7 @@ const Index = () => {
           <h2>Ready to Get Organized?</h2>
           <p>
             Join thousands of users who have transformed their productivity with
-            TodoApp.
+            VectraList.
           </p>
           <Link
             to="/signup"
@@ -115,7 +115,7 @@ const Index = () => {
       {/* Footer */}
       <footer className="custom-footer">
         <p>
-          &copy; 2026 TodoApp. All rights reserved. Built with ❤️ for
+          &copy; 2026 VectraList. All rights reserved. Built with ❤️ for
           productivity.
         </p>
       </footer>
