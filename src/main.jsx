@@ -7,10 +7,10 @@ import "bootstrap/dist/css/bootstrap.min.css";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <DataApiProvider>
-      <BrowserRouter>
+    <BrowserRouter>
+      <DataApiProvider>
         <App />
-      </BrowserRouter>
-    </DataApiProvider>
+      </DataApiProvider>
+    </BrowserRouter>
   </StrictMode>,
 );
