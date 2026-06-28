@@ -1570,3 +1570,27 @@ body {
   width: fit-content;
   border-radius: 5px;
 }
+.navbar-toast-container {
+  position: relative;
+}
+.custom-toastt-container {
+  position: absolute;
+  top: 100%;
+  right: 20%;
+  padding: 1rem;
+  min-width: 250px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 10px;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  opacity: 0.7;
+  z-index: 1000;
+}
+.custom-toast li {
+  list-style: none;
+  text-align: center;
+  padding: 10px;
+}
+.toast-message-container:not(:last-child) {
+  border-bottom: 1px solid var(--accent-offwhite);
+}

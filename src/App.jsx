@@ -9,6 +9,7 @@ import Dashboard from "./Pages/Dashboard";
 import ManageTodos from "./Pages/ManageTodos";
 import PrivateRoutes from "./Components/PrivateRoutes";
 import Navbar from "./Components/Navbar";
+import Toast from "./Components/Toast";
 
 function App() {
   const location = useLocation();
@@ -32,7 +33,10 @@ function App() {
 
   return (
     <>
-      <Navbar />
+      <div className="navbar-toast-container">
+        <Navbar />
+        <Toast />
+      </div>
       <div
         className={`page page-${transitionStage}`}
         style={{
