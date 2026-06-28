@@ -7,7 +7,13 @@ import { BiError } from "react-icons/bi";
 const Toast = () => {
   const { toasts } = useToastsContext();
   return (
-    <div className="custom-toastt-container">
+    <div
+      className={
+        toasts.length
+          ? "custom-toast-container"
+          : "custom-toast-container hidden"
+      }
+    >
       <div className="custom-toast">
         {toasts.map((toast) => (
           <div className="toast-message-container d-flex justify-content-center align-items-center gap-2">

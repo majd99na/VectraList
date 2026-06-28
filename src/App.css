@@ -1573,7 +1573,7 @@ body {
 .navbar-toast-container {
   position: relative;
 }
-.custom-toastt-container {
+.custom-toast-container {
   position: absolute;
   top: 100%;
   right: 20%;
@@ -1585,6 +1585,11 @@ body {
   border-top-right-radius: 0;
   opacity: 0.7;
   z-index: 1000;
+  transition: all 0.3s ease-in-out;
+}
+.custom-toast-container.hidden {
+  opacity: 0;
+  transform: translateY(-20px);
 }
 .custom-toast li {
   list-style: none;
