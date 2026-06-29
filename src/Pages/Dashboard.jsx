@@ -305,12 +305,12 @@ const Dashboard = () => {
       (t) => t.status !== "Completed" && new Date(t.due_at) >= new Date(),
     ).length,
   };
-  if (loadingTodos)
-    return (
-      <div className="custom-center-content">
-        <Spinner variant="warning" animation="border" />
-      </div>
-    );
+  // if (loadingTodos)
+  //   return (
+  //     <div className="custom-center-content">
+  //       <Spinner variant="warning" animation="border" />
+  //     </div>
+  //   );
   return (
     <div className="custom-dashboard-page">
       <div className="custom-dashboard-container">
@@ -642,100 +642,129 @@ const Dashboard = () => {
               </tr>
             </thead>
             <tbody>
-              {filteredTodos.map((todo) => (
-                <tr
-                  key={todo.id}
-                  className={
-                    selectedTodos.includes(todo.id) ? "custom-selected-row" : ""
-                  }
-                >
-                  <td>
-                    <input
-                      type="checkbox"
-                      checked={selectedTodos.includes(todo.id)}
-                      onChange={() => handleSelectTodo(todo.id)}
-                    />
-                  </td>
-                  <td>
-                    <div
-                      className={`custom-todo-title-cell ${todo.status === "Completed" ? "completed-todo" : ""}`}
-                    >
-                      <strong>{todo.todo}</strong>
-                    </div>
-                  </td>
-                  <td>
-                    <span className="custom-category-badge">
-                      {todo.category}
-                    </span>
-                  </td>
-                  <td>
-                    <span
-                      className={`custom-priority-badge ${getPriorityColor(todo.priority)}`}
-                    >
-                      {todo.priority}
-                    </span>
-                  </td>
-                  <td>
-                    <span
-                      className={`custom-status-badge ${getStatusColor(todo.status)}`}
-                    >
-                      {todo.status}
-                    </span>
-                  </td>
-                  <td>
-                    <span
-                      className={
-                        new Date(todo.due_at) < new Date() &&
-                        todo.status !== "Completed"
-                          ? "custom-overdue-date"
-                          : ""
-                      }
-                    >
+              <>
+                {loadingTodos && (
+                  <>
+                    <tr className="loading-todos">
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr className="loading-todos">
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                  </>
+                )}
+                {filteredTodos.map((todo) => (
+                  <tr
+                    key={todo.id}
+                    className={
+                      selectedTodos.includes(todo.id)
+                        ? "custom-selected-row"
+                        : ""
+                    }
+                  >
+                    <td>
+                      <input
+                        type="checkbox"
+                        checked={selectedTodos.includes(todo.id)}
+                        onChange={() => handleSelectTodo(todo.id)}
+                      />
+                    </td>
+                    <td>
+                      <div
+                        className={`custom-todo-title-cell ${todo.status === "Completed" ? "completed-todo" : ""}`}
+                      >
+                        <strong>{todo.todo}</strong>
+                      </div>
+                    </td>
+                    <td>
+                      <span className="custom-category-badge">
+                        {todo.category}
+                      </span>
+                    </td>
+                    <td>
+                      <span
+                        className={`custom-priority-badge ${getPriorityColor(todo.priority)}`}
+                      >
+                        {todo.priority}
+                      </span>
+                    </td>
+                    <td>
+                      <span
+                        className={`custom-status-badge ${getStatusColor(todo.status)}`}
+                      >
+                        {todo.status}
+                      </span>
+                    </td>
+                    <td>
+                      <span
+                        className={
+                          new Date(todo.due_at) < new Date() &&
+                          todo.status !== "Completed"
+                            ? "custom-overdue-date"
+                            : ""
+                        }
+                      >
+                        {Intl.DateTimeFormat("en-us", {
+                          year: "numeric",
+                          month: "short",
+                          day: "numeric",
+                        }).format(new Date(todo.due_at))}
+                      </span>
+                    </td>
+                    <td>
+                      {" "}
                       {Intl.DateTimeFormat("en-us", {
                         year: "numeric",
                         month: "short",
                         day: "numeric",
-                      }).format(new Date(todo.due_at))}
-                    </span>
-                  </td>
-                  <td>
-                    {" "}
-                    {Intl.DateTimeFormat("en-us", {
-                      year: "numeric",
-                      month: "short",
-                      day: "numeric",
-                    }).format(new Date(todo.created_at))}
-                  </td>
-                  <td>
-                    <div className="custom-action-buttons">
-                      {todo.status !== "Completed" && (
+                      }).format(new Date(todo.created_at))}
+                    </td>
+                    <td>
+                      <div className="custom-action-buttons">
+                        {todo.status !== "Completed" && (
+                          <button
+                            onClick={() =>
+                              editTodo(todo.id, { status: "Completed" })
+                            }
+                            className="custom-btn custom-btn-success custom-btn-sm"
+                            title="Mark as Completed"
+                          >
+                            <FaCheck />
+                          </button>
+                        )}
                         <button
-                          onClick={() =>
-                            editTodo(todo.id, { status: "Completed" })
-                          }
-                          className="custom-btn custom-btn-success custom-btn-sm"
-                          title="Mark as Completed"
+                          onClick={() => handleEdit(todo)}
+                          className="custom-btn custom-btn-secondary custom-btn-sm"
                         >
-                          <FaCheck />
+                          <FaEdit />
                         </button>
-                      )}
-                      <button
-                        onClick={() => handleEdit(todo)}
-                        className="custom-btn custom-btn-secondary custom-btn-sm"
-                      >
-                        <FaEdit />
-                      </button>
-                      <button
-                        onClick={() => handleDelete(todo.id)}
-                        className="custom-btn custom-btn-danger custom-btn-sm"
-                      >
-                        <FaTrash />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-              {filteredTodos.length === 0 && (
+                        <button
+                          onClick={() => handleDelete(todo.id)}
+                          className="custom-btn custom-btn-danger custom-btn-sm"
+                        >
+                          <FaTrash />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </>
+
+              {filteredTodos.length === 0 && !loadingTodos && (
                 <tr>
                   <td colSpan="9" className="custom-empty-state">
                     No todos match your filters
