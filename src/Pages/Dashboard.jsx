@@ -29,7 +29,16 @@ const Dashboard = () => {
 
   const closeModal = () => {
     setIsModalVisible(false);
-    setTimeout(() => setIsModalOpen(false), 300);
+    setTimeout(() => {
+      setIsModalOpen(false);
+      setEditingTodo(null);
+      setFormData({
+        todo: "",
+        category: "",
+        priority: "Medium",
+        due_at: "",
+      });
+    }, 300);
   };
   const [searchTerm, setSearchTerm] = useState("");
   const [openDropdown, setOpenDropdown] = useState(null); // Track which dropdown is open
@@ -57,6 +66,24 @@ const Dashboard = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState(null); // Stores todo ID for single, 'bulk' for bulk deletes
+  const [showViewModal, setShowViewModal] = useState(false);
+  const [isViewModalVisible, setIsViewModalVisible] = useState(false);
+  const [viewingTodo, setViewingTodo] = useState(null); // Stores the todo being viewed in detail modal
+
+  // View modal helpers
+  const openViewModal = (todo) => {
+    setViewingTodo(todo);
+    setShowViewModal(true);
+    setTimeout(() => setIsViewModalVisible(true), 10);
+  };
+
+  const closeViewModal = () => {
+    setIsViewModalVisible(false);
+    setTimeout(() => {
+      setShowViewModal(false);
+      setViewingTodo(null);
+    }, 300);
+  };
 
   // Delete modal helpers
   const openSingleDeleteModal = (todoId) => {
@@ -675,8 +702,18 @@ const Dashboard = () => {
                         ? "custom-selected-row"
                         : ""
                     }
+                    style={{ cursor: "pointer" }}
+                    onClick={(e) => {
+                      // Don't open modal if clicking on checkbox or action buttons
+                      if (
+                        !e.target.closest('input[type="checkbox"]') &&
+                        !e.target.closest(".custom-action-buttons")
+                      ) {
+                        openViewModal(todo);
+                      }
+                    }}
                   >
-                    <td>
+                    <td onClick={(e) => e.stopPropagation()}>
                       <input
                         type="checkbox"
                         checked={selectedTodos.includes(todo.id)}
@@ -686,8 +723,18 @@ const Dashboard = () => {
                     <td>
                       <div
                         className={`custom-todo-title-cell ${todo.status === "Completed" ? "completed-todo" : ""}`}
+                        style={{
+                          maxWidth: "100px",
+                          // overflow: "hidden",
+                          // textOverflow: "ellipsis",
+                          // whiteSpace: "nowrap",
+                        }}
+                        title="Click to view full details"
                       >
-                        <strong>{todo.todo}</strong>
+                        <strong>
+                          {todo.todo.slice(0, 10)}
+                          {todo.todo.length > 10 && "..."}
+                        </strong>
                       </div>
                     </td>
                     <td>
@@ -961,6 +1008,175 @@ const Dashboard = () => {
                   </button>
                 </div>
               </form>
+            </div>
+          </div>
+        )}
+
+        {/* Todo View Detail Modal */}
+        {showViewModal && viewingTodo && (
+          <div
+            className={`custom-modal-overlay ${isViewModalVisible ? "active" : ""}`}
+            onClick={() => closeViewModal()}
+          >
+            <div
+              className="custom-modal view-todo-modal"
+              onClick={(e) => e.stopPropagation()}
+              style={{ maxWidth: "600px", width: "90%", overflow: "visible" }}
+            >
+              <div className="custom-modal-header">
+                <h2>
+                  {Intl.DateTimeFormat("en-us", {
+                    year: "numeric",
+                    month: "short",
+                    day: "numeric",
+                  }).format(new Date(viewingTodo.created_at))}
+                </h2>
+                <button onClick={closeViewModal} className="custom-close-btn">
+                  &times;
+                </button>
+              </div>
+              <div className="custom-modal-body" style={{ padding: "20px" }}>
+                <div style={{ marginBottom: "15px" }}>
+                  <strong
+                    style={{
+                      color: "var(--text-secondary)",
+                      fontSize: "0.9rem",
+                    }}
+                  >
+                    Due Date:
+                  </strong>
+                  <span
+                    style={{
+                      marginLeft: "8px",
+                      color:
+                        new Date(viewingTodo.due_at) < new Date() &&
+                        viewingTodo.status !== "Completed"
+                          ? "var(--danger-color)"
+                          : "var(--text-primary)",
+                    }}
+                  >
+                    {Intl.DateTimeFormat("en-us", {
+                      year: "numeric",
+                      month: "short",
+                      day: "numeric",
+                    }).format(new Date(viewingTodo.due_at))}
+                  </span>
+                </div>
+                <div
+                  style={{
+                    display: "flex",
+                    gap: "10px",
+                    marginBottom: "20px",
+                    flexWrap: "wrap",
+                  }}
+                >
+                  <span className={`custom-category-badge`}>
+                    {viewingTodo.category}
+                  </span>
+                  <span
+                    className={`custom-priority-badge ${getPriorityColor(viewingTodo.priority)}`}
+                  >
+                    {viewingTodo.priority}
+                  </span>
+                  <span
+                    className={`custom-status-badge ${getStatusColor(viewingTodo.status)}`}
+                  >
+                    {viewingTodo.status}
+                  </span>
+                </div>
+                <div
+                  style={{
+                    lineHeight: "1.6",
+                    color: "var(--text-primary)",
+                    whiteSpace: "pre-wrap",
+                  }}
+                >
+                  {viewingTodo.todo}
+                </div>
+              </div>
+              <div
+                className="custom-modal-actions"
+                style={{
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                }}
+              >
+                <div
+                  style={{ display: "flex", alignItems: "center", gap: "10px" }}
+                >
+                  <span
+                    style={{
+                      fontSize: "0.9rem",
+                      color: "var(--text-secondary)",
+                    }}
+                  >
+                    Change Status:
+                  </span>
+                  <div
+                    className="custom-dropdown"
+                    onClick={(e) => e.stopPropagation()}
+                    style={{ margin: 0 }}
+                  >
+                    <div
+                      className="custom-dropdown-trigger"
+                      onClick={() =>
+                        setOpenModalDropdown(
+                          openModalDropdown === "view-status"
+                            ? null
+                            : "view-status",
+                        )
+                      }
+                      style={{
+                        minWidth: "140px",
+                        padding: "4px 8px",
+                        fontSize: "0.9rem",
+                      }}
+                    >
+                      {viewingTodo.status}
+                      <span>
+                        {openModalDropdown === "view-status" ? "▲" : "▼"}
+                      </span>
+                    </div>
+                    <div
+                      className={`custom-dropdown-menu ${openModalDropdown === "view-status" ? "open" : ""}`}
+                    >
+                      {statuses.map((status) => (
+                        <div
+                          key={status}
+                          className={`custom-dropdown-item ${viewingTodo.status === status ? "selected" : ""}`}
+                          onClick={() => {
+                            editTodo(viewingTodo.id, { status: status });
+                            setViewingTodo({ ...viewingTodo, status: status });
+                            setOpenModalDropdown(null);
+                          }}
+                        >
+                          {status}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+                <div style={{ display: "flex", gap: "8px" }}>
+                  <button
+                    onClick={() => {
+                      handleEdit(viewingTodo);
+                      closeViewModal();
+                    }}
+                    className="custom-btn custom-btn-secondary custom-btn-sm"
+                  >
+                    <FaEdit /> Edit
+                  </button>
+                  <button
+                    onClick={() => {
+                      closeViewModal();
+                      handleDelete(viewingTodo.id);
+                    }}
+                    className="custom-btn custom-btn-danger custom-btn-sm"
+                  >
+                    <FaTrash /> Delete
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         )}

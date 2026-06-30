@@ -1051,6 +1051,7 @@ body {
   justify-content: flex-end;
   gap: 1rem;
   margin-top: 1rem;
+  padding: 1rem;
 }
 
 /* Manage Page Styles */
@@ -1199,6 +1200,7 @@ body {
   border-bottom: 1px solid var(--border-color);
   vertical-align: middle;
 }
+
 .custom-sortable-header {
   cursor: pointer;
   display: flex;
@@ -1214,7 +1216,12 @@ body {
   display: block;
   line-height: 1.4;
 }
-
+.custom-todos-table tbody tr {
+  transition: scale 0.3s ease-in-out;
+}
+.custom-todos-table tbody tr:hover {
+  scale: 1.01;
+}
 .custom-overdue-date {
   color: var(--accent-red);
   font-weight: 600;
